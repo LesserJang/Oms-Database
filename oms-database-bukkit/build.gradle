@@ -7,13 +7,13 @@ repositories {
 }
 
 dependencies {
-    compile project(':oms-database-core')
+    implementation project(':oms-database-core')
     compileOnly bukkit('1.13.2')
 }
 
 jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 

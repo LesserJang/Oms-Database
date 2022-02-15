@@ -3,21 +3,29 @@ plugins {
 }
 
 dependencies {
-    compile project(':oms-database-core')
-    compileOnly 'org.spongepowered:spongeapi:7.3.0'
-    annotationProcessor 'org.spongepowered:spongeapi:7.3.0'
-}
-
-sponge {
-    plugin {
-        meta {
-            version = project.version
-        }
-    }
+    implementation project(':oms-database-core')
+    compileOnly 'org.spongepowered:spongeapi:7.4.0'
+    annotationProcessor 'org.spongepowered:spongeapi:7.4.0'
 }
 
 jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
+task copyMetadata(type: Copy) {
+    from "src/main/resources/mcmod.info"
+    into "/build/tmp/generateMetadata/"
+
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('mcmod.info') {
+        expand props
+    }
+}
+
+compileJava.dependsOn(copyMetadata)
+
+generateMetadata.enabled = false

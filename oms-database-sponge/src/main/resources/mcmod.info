@@ -1,0 +1,14 @@
+[
+    {
+        "modid": "oms-database-sponge",
+        "name": "Oms-Database",
+        "version": "${version}",
+        "description": "우마공 DB",
+        "dependencies": [
+            "spongeapi@7.4.7"
+        ],
+        "requiredMods": [
+            "spongeapi@7.4.7"
+        ]
+    }
+]
