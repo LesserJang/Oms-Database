@@ -1,0 +1,72 @@
+plugins {
+    id 'kr.entree.spigradle' version '1.2.4'
+}
+
+repositories {
+    spigot()
+}
+
+dependencies {
+    compile project(':oms-database-core')
+    compileOnly bukkit('1.13.2')
+}
+
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+spigot {
+    name = "OmsDatabase"
+    authors = ["Lesser"]
+    apiVersion = '1.13'
+    commands {
+        omsdatabase {
+            aliases = ['omsdb']
+            description = 'Our Mc Space Database Command'
+            permission = 'omsdatabase.usage'
+            permissionMessage = '§c당신은 권한이 없습니다!'
+            usage = '/omsdb get <username|UUID>'
+        }
+    }
+    permissions {
+        'omsdatabase.usage' {
+            description = 'Allows Omsdatabase command'
+            defaults = 'op'
+        }
+        'omsdatabase.notification' {
+            description = 'Active Notification'
+            defaults = 'op'
+        }
+        'omsdatabase.bypass.join-check' {
+            description = 'Bypass join check'
+            defaults = 'op'
+        }
+        'omsdatabase.bypass.ban' {
+            description = 'Bypass ban'
+            defaults = 'op'
+        }
+        'omsdatabase.bypass.*' {
+            description = 'Wildcard bypass permission'
+            defaults = 'op'
+            children = 
+                    [
+                            'omsdatabase.bypass.join-check': true, 
+                            'omsdatabase.bypass.ban': true
+                    ]
+        }
+        'omsdatabase.*' {
+            description = 'Wildcard permission'
+            defaults = 'op'
+            children =
+                    [
+                            'omsdatabase.usage': true,
+                            'omsdatabase.notification': true,
+                            'omsdatabase.bypass.join-check': true,
+                            'omsdatabase.bypass.ban': true,
+                            'omsdatabase.bypass.*': true
+                    ]
+        }
+    }
+}

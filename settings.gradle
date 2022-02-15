@@ -1,0 +1,4 @@
+rootProject.name = 'oms-database'
+include 'oms-database-core'
+include 'oms-database-bukkit'
+include 'oms-database-sponge'
