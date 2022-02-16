@@ -144,6 +144,7 @@ public class SpongePlugin {
             this.player = player;
             this.user = null;
         }
+
         public ImplPlayer(User user) {
             this.player = null;
             this.user = user;

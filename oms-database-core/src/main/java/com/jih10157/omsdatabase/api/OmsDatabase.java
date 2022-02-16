@@ -40,9 +40,8 @@ public class OmsDatabase {
                 }
                 return gson.fromJson(object.get("value"), ReportAll.class);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-            return null;
         });
     }
 
@@ -59,9 +58,8 @@ public class OmsDatabase {
                 }
                 return gson.fromJson(object.get("value"), ReportsOfNickname.class);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-            return null;
         });
     }
 
@@ -81,9 +79,8 @@ public class OmsDatabase {
                 }
                 return gson.fromJson(object.get("value"), ReportCountOfUUID.class);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-            return null;
         });
     }
 
@@ -99,9 +96,8 @@ public class OmsDatabase {
                 }
                 return gson.fromJson(object.get("value"), ReportsOfUUID.class);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-            return null;
         });
     }
 }
