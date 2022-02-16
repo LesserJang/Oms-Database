@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import org.bstats.sponge.Metrics;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
@@ -24,14 +25,18 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-@Plugin(id = "oms-database-sponge", name = "Oms-Database", description = "우마공 DB")
+@Plugin(id = "oms-database-sponge", name = "OmsDatabase", description = "우마공 DB")
 public class SpongePlugin {
 
+    private final Logger logger;
+    private final Path defaultConfig;
+
     @Inject
-    private Logger logger;
-    @Inject
-    @DefaultConfig(sharedRoot = true)
-    private Path defaultConfig;
+    public SpongePlugin(Logger logger, @DefaultConfig(sharedRoot = true) Path defaultConfig, Metrics.Factory metrics) {
+        this.logger = logger;
+        this.defaultConfig = defaultConfig;
+        metrics.make(14327);
+    }
 
     @Listener
     public void onServerStart(GameInitializationEvent event) {

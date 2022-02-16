@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +22,7 @@ public class BukkitPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("omsdatabase"))
             .setExecutor(new CommandListener(core.getCommandListener()));
         Bukkit.getPluginManager().registerEvents(new EventListener(core.getEventListener()), this);
+        new Metrics(this, 14326);
     }
 
     public static class ImplServer implements Server {
