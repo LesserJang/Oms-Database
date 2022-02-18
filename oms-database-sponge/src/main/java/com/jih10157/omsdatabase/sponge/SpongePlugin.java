@@ -142,7 +142,7 @@ public class SpongePlugin {
         }
 
         private CommentedConfigurationNode getNode(String path) {
-            return this.configNode.getNode(Arrays.stream(path.split("\\.")).iterator());
+            return this.configNode.getNode((Object[]) path.split("\\."));
         }
     }
 
