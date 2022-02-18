@@ -44,28 +44,24 @@ public class ImplEventListener implements EventListener {
                 }
             }));
         }).exceptionally(throwable -> {
-            if (throwable.getCause() instanceof OmsFailException) {
-                OmsFailException ex = (OmsFailException) throwable.getCause();
-                if (ex.code == 404) {
-                    if (0 >= config.getInt("join-check.condition")) {
-                        String message = Message.formatMessage(
-                            config.getString("join-check.message"),
-                            player.getUUID().toString().replace("-", ""),
-                            player.getName(),
-                            0
-                        );
-                        core.getServer().getAllPlayers().forEach((all -> {
-                            if (all.hasPermission("omsdatabase.notification")) {
-                                all.sendMessage(message);
-                            }
-                        }));
-                    }
-                    return null;
-                } else {
-                    core.getServer().sendMessage(
-                        player.getName() + "님의 제보 갯수를 불러오는 중 예외가 발생하였습니다.: " + ex.code + " ("
-                            + ex.reason + ")");
+            if (throwable.getCause() instanceof OmsFailException
+                && ((OmsFailException) throwable.getCause()).code == 404) {
+                if (0 >= config.getInt("join-check.condition")) {
+                    String message = Message.formatMessage(
+                        config.getString("join-check.message"),
+                        player.getUUID().toString().replace("-", ""),
+                        player.getName(),
+                        0
+                    );
+                    core.getServer().getAllPlayers().forEach((all -> {
+                        if (all.hasPermission("omsdatabase.notification")) {
+                            all.sendMessage(message);
+                        }
+                    }));
                 }
+            } else {
+                core.getServer()
+                    .error(player.getName() + "님의 제보 개수를 불러오는 중 예외가 발생하였습니다.", throwable);
             }
             return null;
         });
@@ -88,17 +84,13 @@ public class ImplEventListener implements EventListener {
                 player.getName(),
                 reportCount.count
             );
-        } catch (ExecutionException throwable) {
-            if (throwable.getCause() instanceof OmsFailException) {
-                OmsFailException ex = (OmsFailException) throwable.getCause();
-                if (ex.code != 404) {
-                    core.getServer().sendMessage(
-                        player.getName() + "님의 제보 갯수를 불러오는 중 예외가 발생하였습니다.: " + ex.code + " ("
-                            + ex.reason + ")");
-                }
+        } catch (ExecutionException | InterruptedException throwable) {
+            if (!(throwable.getCause() instanceof OmsFailException)
+                || ((OmsFailException) throwable.getCause()).code != 404) {
+                core.getServer()
+                    .error(player.getName() + "님의 제보 개수를 불러오는 중 예외가 발생하였습니다.", throwable);
             }
-        } catch (InterruptedException ignored) {
+            return null;
         }
-        return null;
     }
 }

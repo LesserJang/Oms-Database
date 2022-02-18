@@ -40,12 +40,18 @@ public class SpongePlugin {
 
     @Listener
     public void onServerStart(GameInitializationEvent event) {
-        Core core = new Core(new ImplServer(), new ImplConfig(this));
+        Core core = new Core(new ImplServer(this.logger), new ImplConfig(this));
         Sponge.getEventManager().registerListeners(this, new EventListener(core.getEventListener()));
         Sponge.getCommandManager().register(this, new CommandListener(core.getCommandListener()), "omsdatabase", "omsdb");
     }
 
     private static final class ImplServer implements Server {
+
+        private final Logger logger;
+
+        private ImplServer(Logger logger) {
+            this.logger = logger;
+        }
 
         @Override
         public void sendMessage(String message) {
@@ -62,6 +68,11 @@ public class SpongePlugin {
         @Override
         public Player getPlayer(String name) {
             return Sponge.getServer().getPlayer(name).map(ImplPlayer::new).orElse(null);
+        }
+
+        @Override
+        public void error(String message, Throwable throwable) {
+            this.logger.warn(message, throwable);
         }
     }
 
