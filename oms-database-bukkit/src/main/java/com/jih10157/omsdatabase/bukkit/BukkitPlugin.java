@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +20,7 @@ public class BukkitPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        Core core = new Core(new ImplServer(), new ImplConfig(this));
+        Core core = new Core(new ImplServer(this.getLogger()), new ImplConfig(this));
         Objects.requireNonNull(getCommand("omsdatabase"))
             .setExecutor(new CommandListener(core.getCommandListener()));
         Bukkit.getPluginManager().registerEvents(new EventListener(core.getEventListener()), this);
@@ -26,6 +28,12 @@ public class BukkitPlugin extends JavaPlugin {
     }
 
     public static class ImplServer implements Server {
+
+        private final Logger logger;
+
+        private ImplServer(Logger logger) {
+            this.logger = logger;
+        }
 
         @Override
         public List<Player> getAllPlayers() {
@@ -40,6 +48,11 @@ public class BukkitPlugin extends JavaPlugin {
         @SuppressWarnings("deprecation")
         public Player getPlayer(String name) {
             return Bukkit.getPlayer(name) != null ? new ImplPlayer(Bukkit.getPlayer(name)) : null;
+        }
+
+        @Override
+        public void error(String message, Throwable throwable) {
+            this.logger.log(Level.SEVERE, message, throwable);
         }
 
         @Override
