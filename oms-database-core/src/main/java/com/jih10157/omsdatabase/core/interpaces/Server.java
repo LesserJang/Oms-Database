@@ -6,4 +6,5 @@ public interface Server extends Sendable {
     List<Player> getAllPlayers();
     Player getPlayer(String name);
     void error(String message, Throwable throwable);
+    void doSync(Runnable runnable);
 }

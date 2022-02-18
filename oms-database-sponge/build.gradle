@@ -11,6 +11,9 @@ dependencies {
 }
 
 shadowJar {
+    dependencies {
+        exclude dependency('com.github.ben-manes.caffeine:caffeine:3.0.5')
+    }
     relocate 'org.bstats', 'com.jih10157.omsdatabase.sponge.metrics'
 }
 
