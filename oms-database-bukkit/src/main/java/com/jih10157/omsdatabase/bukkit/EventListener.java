@@ -22,9 +22,8 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onConnect(PlayerLoginEvent event) {
-        String string = listener.onConnect(new ImplPlayer(event.getPlayer()));
-        if (string != null) {
-            event.disallow(Result.KICK_BANNED, string);
-        }
+        listener.onConnect(new ImplPlayer(event.getPlayer()),
+            msg -> event.getPlayer().kickPlayer(msg),
+            msg -> event.disallow(Result.KICK_BANNED, msg));
     }
 }

@@ -23,6 +23,7 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 @Plugin(id = "oms-database-sponge", name = "OmsDatabase", description = "우마공 DB")
@@ -40,17 +41,19 @@ public class SpongePlugin {
 
     @Listener
     public void onServerStart(GameInitializationEvent event) {
-        Core core = new Core(new ImplServer(this.logger), new ImplConfig(this));
+        Core core = new Core(new ImplServer(this), new ImplConfig(this));
         Sponge.getEventManager().registerListeners(this, new EventListener(core.getEventListener()));
         Sponge.getCommandManager().register(this, new CommandListener(core.getCommandListener()), "omsdatabase", "omsdb");
     }
 
     private static final class ImplServer implements Server {
 
+        private final SpongePlugin instance;
         private final Logger logger;
 
-        private ImplServer(Logger logger) {
-            this.logger = logger;
+        private ImplServer(SpongePlugin instance) {
+            this.instance = instance;
+            this.logger = instance.logger;
         }
 
         @Override
@@ -73,6 +76,11 @@ public class SpongePlugin {
         @Override
         public void error(String message, Throwable throwable) {
             this.logger.warn(message, throwable);
+        }
+
+        @Override
+        public void doSync(Runnable runnable) {
+            Task.builder().execute(runnable).submit(this.instance);
         }
     }
 

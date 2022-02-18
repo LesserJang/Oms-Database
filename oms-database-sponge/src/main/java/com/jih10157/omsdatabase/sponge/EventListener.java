@@ -21,10 +21,12 @@ public class EventListener {
 
     @Listener
     public void onConnect(Login event) {
-        String string = listener.onConnect(new ImplPlayer(event.getTargetUser()));
-        if (string != null) {
-            event.setCancelled(true);
-            event.setMessage(TextSerializers.FORMATTING_CODE.deserialize(string));
-        }
+        listener.onConnect(new ImplPlayer(event.getTargetUser()),
+            msg -> event.getTargetUser().getPlayer()
+                .ifPresent(p -> p.kick(TextSerializers.FORMATTING_CODE.deserialize(msg))),
+            msg -> {
+                event.setCancelled(true);
+                event.setMessage(TextSerializers.FORMATTING_CODE.deserialize(msg));
+            });
     }
 }
