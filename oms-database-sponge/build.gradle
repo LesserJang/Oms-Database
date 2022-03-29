@@ -1,3 +1,38 @@
-dependencies {
-    compile project(':oms-database-core')
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.spongepowered.plugin' version '0.9.0'
 }
+
+dependencies {
+    implementation project(':oms-database-core')
+    compileOnly 'org.spongepowered:spongeapi:7.4.0'
+    annotationProcessor 'org.spongepowered:spongeapi:7.4.0'
+    implementation 'org.bstats:bstats-sponge:2.2.1'
+}
+
+shadowJar {
+    dependencies {
+        exclude dependency('com.github.ben-manes.caffeine:caffeine:3.0.5')
+    }
+    relocate 'org.bstats', 'com.jih10157.omsdatabase.sponge.metrics'
+}
+
+jar {
+    finalizedBy shadowJar
+}
+
+task copyMetadata(type: Copy) {
+    from "src/main/resources/mcmod.info"
+    into "/build/tmp/generateMetadata/"
+
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('mcmod.info') {
+        expand props
+    }
+}
+
+compileJava.dependsOn(copyMetadata)
+
+generateMetadata.enabled = false

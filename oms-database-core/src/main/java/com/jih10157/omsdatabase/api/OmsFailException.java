@@ -6,6 +6,7 @@ public class OmsFailException extends RuntimeException {
     public final String reason;
 
     public OmsFailException(int code, String reason) {
+        super("error code: " + code + ", reason: " + reason);
         this.code = code;
         this.reason = reason;
     }

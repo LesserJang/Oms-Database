@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'kr.entree.spigradle' version '1.2.4'
 }
 
@@ -7,14 +8,17 @@ repositories {
 }
 
 dependencies {
-    compile project(':oms-database-core')
+    implementation project(':oms-database-core')
     compileOnly bukkit('1.13.2')
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
+}
+
+shadowJar {
+    relocate 'org.bstats', 'com.jih10157.omsdatabase.bukkit.metrics'
 }
 
 jar {
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    finalizedBy shadowJar
 }
 
 spigot {
